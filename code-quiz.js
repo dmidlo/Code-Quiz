@@ -15,7 +15,6 @@ console.log(GreetingMessage.headingText);
 console.log(GreetingMessage.descriptionText);
 
 
-
 /////////////////////////////////////////////////////////////////
 // TODO: Create a JavaScript Object to report their final score to the user and enter and submit their initials
 //          (object should conform to existing card containers (3x: textHeader, (answer/finalscore & enter initials), leave the last container empty.))
@@ -221,6 +220,7 @@ var scoreEntryInput = document.createElement("input");
 scoreEntryInput.setAttribute("id", "score-entry-input");
 scoreEntryInput.setAttribute("name", "score-entry-input");
 scoreEntryInput.setAttribute("type", "text");
+scoreEntryInput.required = true;
 scoreEntryForm.appendChild(scoreEntryInput);
 /////////////////////////////////////////////////////////////////
 var scoreEntrySubmit = document.createElement("input");
@@ -231,19 +231,25 @@ scoreEntryForm.appendChild(scoreEntrySubmit);
 console.log(scoreEntryForm);
 
 
-{/* <form action="" method="get" class="form-example">
-  <div class="form-example">
-    <label for="name">Enter your name: </label>
-    <input type="text" name="name" id="name" required>
-  </div>
-  <div class="form-example">
-    <label for="email">Enter your email: </label>
-    <input type="email" name="email" id="email" required>
-  </div>
-  <div class="form-example">
-    <input type="submit" value="Subscribe!">
-  </div>
-</form> */}
+/////////////////////////////////////////////////////////////////
+// Create a container to hold high scores and assoc actions (start again & clear highscores)
+var highscoresSection = document.createElement("section");
+highscoresSection.setAttribute("id", "highscores-section");
+// Create child container to hold desc sorted high scores (ordered list)
+var highscoresOL = document.createElement("ol");
+highscoresOL.setAttribute("id", "highscores-ol");
+highscoresSection.appendChild(highscoresOL);
+// Create Play Again Button /////////////////////////////////////
+var playAgainBtn = document.createElement("button");
+playAgainBtn.setAttribute("id", "start-quiz-btn");
+playAgainBtn.textContent = "Play Again!";
+highscoresSection.appendChild(playAgainBtn);
+// Create Clear High Scores Button //////////////////////////////
+var clearHighscoresBtn = document.createElement("button");
+clearHighscoresBtn.setAttribute("id", "clear-highscores-btn");
+clearHighscoresBtn.textContent = "Clear Highscores";
+highscoresSection.appendChild(clearHighscoresBtn);
+console.log(highscoresSection);
 
 
 
