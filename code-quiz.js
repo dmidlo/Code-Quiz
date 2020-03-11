@@ -159,27 +159,46 @@ function CodeQuiz (Card, JSONstr) {
         return headingNode;
     }
     this.bindHeading = function () {Card.bindElement("heading", this.currentQuestionHeader());}
-    this.correctAnswerLI = null;
-    this.incorrectAnswerLIs = null;
+    this.shuffle = function (array) {
+        var counter = array.length;
+        
+        //while there are elements in the array
+        while (counter > 0){
+            //pick a random index each time the counter is decremented
+            var i = Math.floor(Math.random() * counter);
+            counter--;
+
+            //create a new temporary var and grab the random index from above
+            var temp = array[counter];
+            array[counter] = array[i];
+            array[i] = temp;
+        }
+
+        return array;
+    }
+    this.cut = function (array, length) { return array.slice(0, length); }
     this.possibleAnswers = function () {
+        var correctAnswerLI = null;
         var incorrectAnswerLIs = [];
+        var possibleAnswers = [];
         (this.questionsObj["questions"][this.currentQuestion]["question"]["answers"]).forEach(function (element, i) {
             var AnswerLI = document.createElement("li");
             AnswerLI.setAttribute("data-item", i);
             if(element.hasOwnProperty("solution") && element["solution"] === true){
                 AnswerLI.textContent = element["answerText"];
                 AnswerLI.setAttribute("data-correct","true");
-                this.correctAnswerLI = AnswerLI;
+                correctAnswerLI = AnswerLI;
                 
-                console.log(this.correctAnswerLI);
+                
             } else {
                 AnswerLI.setAttribute("data-correct", "false");
                 AnswerLI.textContent = element["answerText"];
                 incorrectAnswerLIs.push(AnswerLI);
             }
         });
-        this.incorrectAnswerLIs = incorrectAnswerLIs;
-        console.log(this.incorrectAnswerLIs);
+        possibleAnswers = this.shuffle(incorrectAnswerLIs);
+        possibleAnswers.push(correctAnswerLI);
+        this.possibleAnswers = this.shuffle(possibleAnswers);
     }
     /////////////////////////////////////////////////////////////////
     // Create an Ordered List to be updated for each question's answers
