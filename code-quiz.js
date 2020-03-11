@@ -1,78 +1,5 @@
 /////////////////////////////////////////////////////////////////
-/// DOM Elements ////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////
-// create a header to hold the following:
-// ........reate a link to show the user the high scores.
-// ................. TODO: User should not be able to see high scores while in game.
-var highscoresAnchor = document.getElementById("view-highscores-anchor");
-console.log(highscoresAnchor);
-
-
-
-/////////////////////////////////////////////////////////////////
-// ........ Create a indicator to show time elapsed while in game.
-// TODO: create 75 second timer that begins when quiz start button is clicked
-var timerSpan = document.getElementById("timer-span");
-console.log(timerSpan);
-
-
-
-/////////////////////////////////////////////////////////////////
-// create a article container to hold the question card.
-var questionCard = document.getElementById("question-card");
-console.log(questionCard);
-/////////////////////////////////////////////////////////////////
-// ........ Create a section for the question text header
-// ........ Create a section container to hold the answers
-// ........ Create a section container to report the result of choice of answer.
-var questionHeader = questionCard.querySelector("#question-header");
-console.log(questionHeader);
-/////////////////////////////////////////////////////////////////
-var questionAnswers = questionCard.querySelector("#question-answers");
-console.log(questionAnswers);
-/////////////////////////////////////////////////////////////////
-var questionFooter = questionCard.querySelector("#question-footer");
-console.log(questionFooter);
-
-
-
-/////////////////////////////////////////////////////////////////
-// Create a "Start Quiz!" button for inserting into the start screen
-var startQuizBtn = document.createElement("button");
-startQuizBtn.setAttribute("id", "start-quiz-btn");
-startQuizBtn.textContent = "Start Quiz!";
-console.log(startQuizBtn);
-
-
-/////////////////////////////////////////////////////////////////
-// Create an Ordered List to be updated for each question's answers
-// list should have no more than 4 possible answers.  3 + 1 correct solution. (unless new question types are introduced.)
-var possibleAnswersOL = document.createElement("ol");
-possibleAnswersOL.setAttribute("id", "possible-answers-ol");
-console.log(possibleAnswersOL);
-
-/////////////////////////////////////////////////////////////////
-// Create footer correct/incorrect with horizontal rule
-var footerSection = document.createElement("section");
-footerSection.setAttribute("id", "footer-section");
-/////////////////////////////////////////////////////////////////
-footerSection.appendChild(document.createElement("hr"));
-/////////////////////////////////////////////////////////////////
-var footerCorrect = document.createElement("blockquote");
-footerCorrect.textContent = "Right!"
-console.log(footerCorrect);
-/////////////////////////////////////////////////////////////////
-var footerInCorrect = document.createElement("blockquote");
-footerInCorrect.textContent = "Wrong!!";
-console.log(footerInCorrect);
-console.log(footerSection);
-
-
-
-/////////////////////////////////////////////////////////////////
-/// JS Variables ////////////////////////////////////////////////
+/// DOM Element Content /////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////
@@ -109,11 +36,14 @@ console.log(QuizReport.scoreMessage);
 // ......... TODO: Allow User to reset High Scores
 var TopScores = {
   headingText: "High Scores",
-  scoreMessage: "Your Final Score is: "
+  scores: []
 };
 console.log(TopScores);
 console.log(TopScores.headingText);
 console.log(TopScores.scoreMessage);
+
+
+
 
 
 /////////////////////////////////////////////////////////////////
@@ -201,6 +131,120 @@ var questionsJsonStr =
 // Convert Questions JSON (str) into an javascript object
 var questionsObj = JSON.parse(questionsJsonStr);
 console.log(questionsObj);
+
+/////////////////////////////////////////////////////////////////
+/// DOM Elements ////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////
+// create a header to hold the following:
+// ........reate a link to show the user the high scores.
+// ................. TODO: User should not be able to see high scores while in game.
+var highscoresAnchor = document.getElementById("view-highscores-anchor");
+console.log(highscoresAnchor);
+
+
+
+/////////////////////////////////////////////////////////////////
+// ........ Create a indicator to show time elapsed while in game.
+// TODO: create 75 second timer that begins when quiz start button is clicked
+var timerSpan = document.getElementById("timer-span");
+console.log(timerSpan);
+
+
+
+/////////////////////////////////////////////////////////////////
+// create a article container to hold the question card.
+var questionCard = document.getElementById("question-card");
+console.log(questionCard);
+/////////////////////////////////////////////////////////////////
+// ........ Create a section for the question text header
+// ........ Create a section container to hold the answers
+// ........ Create a section container to report the result of choice of answer.
+var questionHeader = questionCard.querySelector("#question-header");
+console.log(questionHeader);
+/////////////////////////////////////////////////////////////////
+var questionAnswers = questionCard.querySelector("#question-answers");
+console.log(questionAnswers);
+/////////////////////////////////////////////////////////////////
+var questionFooter = questionCard.querySelector("#question-footer");
+console.log(questionFooter);
+
+
+
+/////////////////////////////////////////////////////////////////
+// Create a "Start Quiz!" button for inserting into the start screen
+var startQuizBtn = document.createElement("button");
+startQuizBtn.setAttribute("id", "start-quiz-btn");
+startQuizBtn.textContent = "Start Quiz!";
+console.log(startQuizBtn);
+
+
+/////////////////////////////////////////////////////////////////
+// Create an Ordered List to be updated for each question's answers
+// list should have no more than 4 possible answers.  3 + 1 correct solution. (unless new question types are introduced.)
+var possibleAnswersOL = document.createElement("ol");
+possibleAnswersOL.setAttribute("id", "possible-answers-ol");
+console.log(possibleAnswersOL);
+
+/////////////////////////////////////////////////////////////////
+// Create footer correct/incorrect with horizontal rule
+var footerSection = document.createElement("section");
+footerSection.setAttribute("id", "footer-section");
+footerSection.appendChild(document.createElement("hr"));
+/////////////////////////////////////////////////////////////////
+var footerCorrect = document.createElement("blockquote");
+footerCorrect.setAttribute("id", "footer-correct");
+footerCorrect.textContent = "Right!"
+console.log(footerCorrect);
+/////////////////////////////////////////////////////////////////
+var footerInCorrect = document.createElement("blockquote");
+footerInCorrect.setAttribute("id", "footer-incorrect");
+footerInCorrect.textContent = "Wrong!!";
+console.log(footerInCorrect);
+console.log(footerSection);
+
+
+/////////////////////////////////////////////////////////////////
+// Create Score entry form
+var scoreEntryForm = document.createElement("form");
+scoreEntryForm.setAttribute("id", "score-entry-form");
+scoreEntryForm.setAttribute("action", "post");
+/////////////////////////////////////////////////////////////////
+var scoreEntryLabel = document.createElement("label");
+scoreEntryLabel.setAttribute("id","score-entry-label");
+scoreEntryLabel.setAttribute("for", "score-entry-input");
+scoreEntryLabel.textContent = "Enter Intitials: "
+scoreEntryForm.appendChild(scoreEntryLabel);
+/////////////////////////////////////////////////////////////////
+var scoreEntryInput = document.createElement("input");
+scoreEntryInput.setAttribute("id", "score-entry-input");
+scoreEntryInput.setAttribute("name", "score-entry-input");
+scoreEntryInput.setAttribute("type", "text");
+scoreEntryForm.appendChild(scoreEntryInput);
+/////////////////////////////////////////////////////////////////
+var scoreEntrySubmit = document.createElement("input");
+scoreEntrySubmit.setAttribute("id","score-entry-submit");
+scoreEntrySubmit.setAttribute("type", "submit");
+scoreEntrySubmit.setAttribute("value", "Submit");
+scoreEntryForm.appendChild(scoreEntrySubmit);
+console.log(scoreEntryForm);
+
+
+{/* <form action="" method="get" class="form-example">
+  <div class="form-example">
+    <label for="name">Enter your name: </label>
+    <input type="text" name="name" id="name" required>
+  </div>
+  <div class="form-example">
+    <label for="email">Enter your email: </label>
+    <input type="email" name="email" id="email" required>
+  </div>
+  <div class="form-example">
+    <input type="submit" value="Subscribe!">
+  </div>
+</form> */}
+
 
 
 
