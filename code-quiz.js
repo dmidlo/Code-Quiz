@@ -1,6 +1,5 @@
-/////////////////////////////////////////////////////////////////
-/// DOM Element Content /////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
+// TODO: use DocumentFragment to construct HTML elements prior to appending the to the doc
+// https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment
 
 
 /////////////////////////////////////////////////////////////////
@@ -213,28 +212,36 @@ function CodeQuiz (Card, JSONstr) {
             possibleAnswersOLNode.appendChild(element);
         })
 
-        var possibleAnswersOLFragment = new DocumentFragment();
-        possibleAnswersOLFragment.appendChild(possibleAnswersOLNode);
-
-        return possibleAnswersOLFragment;
+        return possibleAnswersOLNode;
     };
     this.bindPossibleAnswersFragment = function () {
         Card.bindElement("section", this.possibleAnswersFragment());
     }
     this.render = function () {
         this.bindHeading();
-        //this.possibleAnswersFragment();
         this.bindPossibleAnswersFragment();
     }
 };
 
-
+/////////////////////////////////////////////////////////////////
+// Create footer correct/incorrect with horizontal rule
+var footerSection = document.createElement("section");
+footerSection.setAttribute("id", "footer-section");
+footerSection.appendChild(document.createElement("hr"));
+/////////////////////////////////////////////////////////////////
+var footerCorrect = document.createElement("blockquote");
+footerCorrect.setAttribute("id", "footer-correct");
+footerCorrect.textContent = "Right!"
+/////////////////////////////////////////////////////////////////
+var footerInCorrect = document.createElement("blockquote");
+footerInCorrect.setAttribute("id", "footer-incorrect");
+footerInCorrect.textContent = "Wrong!!";
 /////////////////////////////////////////////////////////////////
 // TODO: Create a JavaScript Object to report their final score to the user and enter and submit their initials
 //          (object should conform to existing card containers (3x: textHeader, (answer/finalscore & enter initials), leave the last container empty.))
-var QuizReport = {
-    headingText: "All Done!",
-    scoreMessage: "Your Final Score is: "
+function QuizReport () {
+    this.headingText = "All Done!";
+    this.scoreMessage = "Your Final Score is: ";
 };
 
 
@@ -251,39 +258,6 @@ var TopScores = {
 
 
 
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////
-/// DOM Elements ////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////
-// Create footer correct/incorrect with horizontal rule
-var footerSection = document.createElement("section");
-footerSection.setAttribute("id", "footer-section");
-footerSection.appendChild(document.createElement("hr"));
-/////////////////////////////////////////////////////////////////
-var footerCorrect = document.createElement("blockquote");
-footerCorrect.setAttribute("id", "footer-correct");
-footerCorrect.textContent = "Right!"
-/////////////////////////////////////////////////////////////////
-var footerInCorrect = document.createElement("blockquote");
-footerInCorrect.setAttribute("id", "footer-incorrect");
-footerInCorrect.textContent = "Wrong!!";
 
 
 /////////////////////////////////////////////////////////////////
