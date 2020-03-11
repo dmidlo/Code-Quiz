@@ -3,88 +3,99 @@
 /////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////
-// TODO: create a header to hold the following:
-// ........ TODO: Create a link to show the user the high scores.
-// ................. User should not be able to see high scores while in game.
-highscoresAnchor = document.getElementById("view-highscores-anchor");
+// create a header to hold the following:
+// ........reate a link to show the user the high scores.
+// ................. TODO: User should not be able to see high scores while in game.
+var highscoresAnchor = document.getElementById("view-highscores-anchor");
 console.log(highscoresAnchor);
 
 
 
 /////////////////////////////////////////////////////////////////
-// ........ TODO: Create a indicator to show time elapsed while in game.
+// ........ Create a indicator to show time elapsed while in game.
 // TODO: create 75 second timer that begins when quiz start button is clicked
-timerSpan = document.getElementById("timer-span");
+var timerSpan = document.getElementById("timer-span");
 console.log(timerSpan);
 
 
 
 /////////////////////////////////////////////////////////////////
-// TODO: create a article container to hold the question card.
-questionCard = document.getElementById("question-card");
+// create a article container to hold the question card.
+var questionCard = document.getElementById("question-card");
 console.log(questionCard);
 /////////////////////////////////////////////////////////////////
-// ........ TODO: Create a section for the question text header
-// ........ TODO: Create a section container to hold the answers
-// ........ TODO: Create a section container to report the result of choice of answer.
-questionHeader = questionCard.querySelector("#question-header");
+// ........ Create a section for the question text header
+// ........ Create a section container to hold the answers
+// ........ Create a section container to report the result of choice of answer.
+var questionHeader = questionCard.querySelector("#question-header");
 console.log(questionHeader);
 /////////////////////////////////////////////////////////////////
-questionAnswers = questionCard.querySelector("#question-answers");
+var questionAnswers = questionCard.querySelector("#question-answers");
 console.log(questionAnswers);
 /////////////////////////////////////////////////////////////////
-questionFooter = questionCard.querySelector("#question-footer");
+var questionFooter = questionCard.querySelector("#question-footer");
 console.log(questionFooter);
 
 
 
 /////////////////////////////////////////////////////////////////
 // Create a "Start Quiz!" button for inserting into the start screen
-startQuizBtn = document.createElement("button");
+var startQuizBtn = document.createElement("button");
 startQuizBtn.setAttribute("id", "start-quiz-btn");
 startQuizBtn.textContent = "Start Quiz!";
 console.log(startQuizBtn);
+
+
+/////////////////////////////////////////////////////////////////
+// Create an Ordered List to be updated for each question's answers
+// list should have no more than 4 possible answers.  3 + 1 correct solution. (unless new question types are introduced.)
+var possibleAnswersOL = document.createElement("ol");
+possibleAnswersOL.setAttribute("id", "possible-answers-ol");
+console.log(possibleAnswersOL);
 
 /////////////////////////////////////////////////////////////////
 /// JS Variables ////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////
-// TODO: Create a greeting message JavaScript Object that confroms to the three row layout.
+// Create a greeting message JavaScript Object that confroms to the three row layout.
 // "Coding Quiz Challenge"
 // "To answer the following code-related questions within the time. Keep in mind, incorrect answers will penalize your score/time by 10 seconds."
-function GreetingMessage() {
-  this.headingText = "Coding Quiz Challenge";
-  this.descriptionText = "To answer the following code-related questions within the time. Keep in mind, incorrect answers will penalize your score/time by 10 seconds.";
+var GreetingMessage = {
+    headingText: "Coding Quiz Challenge",
+    descriptionText: "To answer the following code-related questions within the time. Keep in mind, incorrect answers will penalize your score/time by 10 seconds."
 };
-greeting = new GreetingMessage();
-console.log(greeting);
+console.log(GreetingMessage);
+console.log(GreetingMessage.headingText);
+console.log(GreetingMessage.descriptionText);
 
 
 
 /////////////////////////////////////////////////////////////////
 // TODO: Create a JavaScript Object to report their final score to the user and enter and submit their initials
 //          (object should conform to existing card containers (3x: textHeader, (answer/finalscore & enter initials), leave the last container empty.))
-function QuizReport() {
-    this.headingText = "All Done!";
-    this.scoreMessage = "Your Final Score is: "
-}
-greeting = new QuizReport();
-console.log(greeting);
+var QuizReport = {
+    headingText: "All Done!",
+    scoreMessage: "Your Final Score is: "
+};
+console.log(QuizReport);
+console.log(QuizReport.headingText);
+console.log(QuizReport.scoreMessage);
 
 
 /////////////////////////////////////////////////////////////////
 // TODO: Report to the user a desc sorted list of high scores
 //          (object header, (scores list & buttuns), empty container)
-// ......... TODO: Create a JavaScript Object to hold the final scores list and interactive elements.
+// ......... Create a JavaScript Object to hold the final scores list and interactive elements.
 // ......... TODO: Allow User to start the quiz over again
 // ......... TODO: Allow User to reset High Scores
-function TopScores() {
-  this.headingText = "High Scores";
-  this.scoreMessage = "Your Final Score is: ";
-}
-scores = new TopScores();
-console.log(scores);
+var TopScores = {
+  headingText: "High Scores",
+  scoreMessage: "Your Final Score is: "
+};
+console.log(TopScores);
+console.log(TopScores.headingText);
+console.log(TopScores.scoreMessage);
 
 
 /////////////////////////////////////////////////////////////////
