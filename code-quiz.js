@@ -106,6 +106,7 @@ function BindCard(Ids) {
     this.parent = document.getElementById(Ids.parentContainer);
     this.heading = this.parent.querySelector(Ids.headingId);
     this.section = this.parent.querySelector(Ids.sectionId);
+    this.section = this.parent.querySelector(Ids.footerId);
     this.footer = this.parent.querySelector(Ids.footerId);
     this.bindElement = function (dstElement, value) { this[dstElement].appendChild(value); }
 };
@@ -173,7 +174,6 @@ function CodeQuiz (Card, JSONstr) {
             array[counter] = array[i];
             array[i] = temp;
         }
-
         return array;
     }
     this.cut = function (array, length) { return array.slice(0, length); }
@@ -183,34 +183,48 @@ function CodeQuiz (Card, JSONstr) {
         var possibleAnswers = [];
         (this.questionsObj["questions"][this.currentQuestion]["question"]["answers"]).forEach(function (element, i) {
             var AnswerLI = document.createElement("li");
-            AnswerLI.setAttribute("data-item", i);
+            AnswerLI.setAttribute("data-index", i);
             if(element.hasOwnProperty("solution") && element["solution"] === true){
                 AnswerLI.textContent = element["answerText"];
                 AnswerLI.setAttribute("data-correct","true");
                 correctAnswerLI = AnswerLI;
-                
-                
             } else {
                 AnswerLI.setAttribute("data-correct", "false");
                 AnswerLI.textContent = element["answerText"];
                 incorrectAnswerLIs.push(AnswerLI);
             }
         });
+        // Shuffle the incorrect array, cut it down to three elements, 
+        // add the correct answer to possible answers, and shuffle again
+        // repopulate this.this(possibleAnswers)
         possibleAnswers = this.shuffle(incorrectAnswerLIs);
+        possibleAnswers = this.cut(possibleAnswers, 3);
         possibleAnswers.push(correctAnswerLI);
-        this.possibleAnswers = this.shuffle(possibleAnswers);
+        return this.shuffle(possibleAnswers);
     }
     /////////////////////////////////////////////////////////////////
     // Create an Ordered List to be updated for each question's answers
     // list should have no more than 4 possible answers.  3 + 1 correct solution. (unless new question types are introduced.)
-    this.possibleAnswersOL = function () {
+    this.possibleAnswersFragment = function () {
         var possibleAnswersOLNode = document.createElement("ol");
         possibleAnswersOLNode.setAttribute("id", "possible-answers-ol");
-        return possibleAnswersOLNode;
+
+        this.possibleAnswers().forEach(function (element) {
+            possibleAnswersOLNode.appendChild(element);
+        })
+
+        var possibleAnswersOLFragment = new DocumentFragment();
+        possibleAnswersOLFragment.appendChild(possibleAnswersOLNode);
+
+        return possibleAnswersOLFragment;
     };
+    this.bindPossibleAnswersFragment = function () {
+        Card.bindElement("section", this.possibleAnswersFragment());
+    }
     this.render = function () {
         this.bindHeading();
-        this.possibleAnswers();
+        //this.possibleAnswersFragment();
+        this.bindPossibleAnswersFragment();
     }
 };
 
@@ -317,11 +331,6 @@ clearHighscoresBtn.setAttribute("id", "clear-highscores-btn");
 clearHighscoresBtn.textContent = "Clear Highscores";
 highscoresSection.appendChild(clearHighscoresBtn);
 
-
-
-
-
-
 /////////////////////////////////////////////////////////////////
 /// Functions ///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -334,11 +343,12 @@ highscoresSection.appendChild(clearHighscoresBtn);
 var CardIds = {
   parentContainer: "question-card", //getbyID
   headingId: "#question-header", //QuerySelector
-  section: "#question-answers", //QuerySelector
+  sectionId: "#question-section", //QuerySelector
   footerId: "#question-footer" //QuerySelector
 };
 
 var QuestionCard = new BindCard(CardIds);
+console.log(QuestionCard)
 Greeting = new GreetingMessage(QuestionCard);
 console.log(Greeting);
 //Greeting.render();
