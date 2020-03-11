@@ -38,6 +38,12 @@ console.log(questionFooter);
 
 
 
+/////////////////////////////////////////////////////////////////
+// Create a "Start Quiz!" button for inserting into the start screen
+startQuizBtn = document.createElement("button");
+startQuizBtn.setAttribute("id", "start-quiz-btn");
+startQuizBtn.textContent = "Start Quiz!";
+console.log(startQuizBtn);
 
 /////////////////////////////////////////////////////////////////
 /// JS Variables ////////////////////////////////////////////////
