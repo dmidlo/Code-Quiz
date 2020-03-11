@@ -2,48 +2,19 @@
 /// DOM Element Content /////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////
-// Create a greeting message JavaScript Object that confroms to the three row layout.
-// "Coding Quiz Challenge"
-// "To answer the following code-related questions within the time. Keep in mind, incorrect answers will penalize your score/time by 10 seconds."
-var GreetingMessage = {
-    headingText: "Coding Quiz Challenge",
-    descriptionText: "To answer the following code-related questions within the time. Keep in mind, incorrect answers will penalize your score/time by 10 seconds."
-};
-console.log(GreetingMessage);
-console.log(GreetingMessage.headingText);
-console.log(GreetingMessage.descriptionText);
-
 
 /////////////////////////////////////////////////////////////////
-// TODO: Create a JavaScript Object to report their final score to the user and enter and submit their initials
-//          (object should conform to existing card containers (3x: textHeader, (answer/finalscore & enter initials), leave the last container empty.))
-var QuizReport = {
-    headingText: "All Done!",
-    scoreMessage: "Your Final Score is: "
-};
-console.log(QuizReport);
-console.log(QuizReport.headingText);
-console.log(QuizReport.scoreMessage);
-
+// create a header to hold the following:
+// ........reate a link to show the user the high scores.
+// ................. TODO: User should not be able to see high scores while in game.
+// this is defined in the HTML as it is persistent on the page.
+var highscoresAnchor = document.getElementById("view-highscores-anchor");
 
 /////////////////////////////////////////////////////////////////
-// TODO: Report to the user a desc sorted list of high scores
-//          (object header, (scores list & buttuns), empty container)
-// ......... Create a JavaScript Object to hold the final scores list and interactive elements.
-// ......... TODO: Allow User to start the quiz over again
-// ......... TODO: Allow User to reset High Scores
-var TopScores = {
-  headingText: "High Scores",
-  scores: []
-};
-console.log(TopScores);
-console.log(TopScores.headingText);
-console.log(TopScores.scoreMessage);
-
-
-
-
+// ........ Create a indicator to show time elapsed while in game.
+// TODO: create 75 second timer that begins when quiz start button is clicked
+// this is defined in the HTML as it is persistent on the page.
+var timerSpan = document.getElementById("timer-span");
 
 /////////////////////////////////////////////////////////////////
 //  Create a JSON string containing questions, answers, and correct solution
@@ -127,64 +98,115 @@ var questionsJsonStr =
         '}' +
     ']}';
 
-// Convert Questions JSON (str) into an javascript object
-var questionsObj = JSON.parse(questionsJsonStr);
-console.log(questionsObj);
+/////////////////////////////////////////////////////////////////
+// ........ Create a section for the question text header
+// ........ Create a section container to hold the answers
+// ........ Create a section container to report the result of choice of answer.
+function BindCard(parentContainer, headingId, mainId, footerId) {
+    this.parent = document.getElementById(parentContainer);
+    this.heading = this.parent.querySelector(headingId);
+    this.main = this.parent.querySelector(mainId);
+    this.footer = this.parent.querySelector(footerId);
+};
+
+
+/////////////////////////////////////////////////////////////////
+// Create a greeting message JavaScript Object that confroms to the three row layout.
+// "Coding Quiz Challenge"
+// "To answer the following code-related questions within the time. Keep in mind, incorrect answers will penalize your score/time by 10 seconds."
+function GreetingMessage (Card) {
+    this.headingText = "Coding Quiz Challenge",
+    this.descriptionText = "To answer the following code-related questions within the time. Keep in mind, incorrect answers will penalize your score/time by 10 seconds.",
+    this.heading = function () { 
+        var headingNode = document.createElement("h1");
+        headingNode.textContent = this.headingText;
+        return headingNode;
+     }
+     this.bindHeading = function () { Card.heading.appendChild(this.heading()); }
+     this.description = function () {
+         var descriptionNode = document.createElement("p")
+         descriptionNode.textContent = this.descriptionText;
+         return descriptionNode;
+     }
+     this.bindDescription = function () { Card.main.appendChild(this.description()) }
+    /////////////////////////////////////////////////////////////////
+    // Create a "Start Quiz!" button for inserting into the start screen
+    //var startQuizBtn = document.createElement("button");
+    this.startQuizBtn = function () {
+        var startQuizBtnNode = document.createElement("button");
+        startQuizBtnNode.setAttribute("id", "start-quiz-btn");
+        startQuizBtnNode.textContent = "Start Quiz!";
+        return startQuizBtnNode;};
+    this.bindStartQuizBtn = function () { Card.main.appendChild(this.startQuizBtn()) }
+
+    this.render = function () {
+        Greeting.bindHeading();
+        Greeting.bindDescription();
+        Greeting.bindStartQuizBtn();
+    }
+};
+
+function CodeQuiz (Card, JSONstr) {
+    // Create counter to keep track of current question
+    this.currentQuestion = 0;
+    // Convert Questions JSON (str) into an javascript object
+    this.questionsObj = JSON.parse(JSONstr);
+    // Build the header for the current question
+    this.currentQuestionHeader = function () {
+        console.log(this.questionsObj.questions[this.currentQuestion]);
+    }
+    /////////////////////////////////////////////////////////////////
+    // Create an Ordered List to be updated for each question's answers
+    // list should have no more than 4 possible answers.  3 + 1 correct solution. (unless new question types are introduced.)
+    this.possibleAnswersOL = function () {
+        var possibleAnswersOLNode = document.createElement("ol");
+        possibleAnswersOLNode.setAttribute("id", "possible-answers-ol");
+        return possibleAnswersOLNode;
+    };
+};
+
+
+/////////////////////////////////////////////////////////////////
+// TODO: Create a JavaScript Object to report their final score to the user and enter and submit their initials
+//          (object should conform to existing card containers (3x: textHeader, (answer/finalscore & enter initials), leave the last container empty.))
+var QuizReport = {
+    headingText: "All Done!",
+    scoreMessage: "Your Final Score is: "
+};
+
+
+/////////////////////////////////////////////////////////////////
+// TODO: Report to the user a desc sorted list of high scores
+//          (object header, (scores list & buttuns), empty container)
+// ......... Create a JavaScript Object to hold the final scores list and interactive elements.
+// ......... TODO: Allow User to start the quiz over again
+// ......... TODO: Allow User to reset High Scores
+var TopScores = {
+  headingText: "High Scores",
+  scores: []
+};
+
+
+
+
+
+
+
+
 
 /////////////////////////////////////////////////////////////////
 /// DOM Elements ////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////
-// create a header to hold the following:
-// ........reate a link to show the user the high scores.
-// ................. TODO: User should not be able to see high scores while in game.
-var highscoresAnchor = document.getElementById("view-highscores-anchor");
-console.log(highscoresAnchor);
 
 
 
-/////////////////////////////////////////////////////////////////
-// ........ Create a indicator to show time elapsed while in game.
-// TODO: create 75 second timer that begins when quiz start button is clicked
-var timerSpan = document.getElementById("timer-span");
-console.log(timerSpan);
 
 
 
-/////////////////////////////////////////////////////////////////
-// create a article container to hold the question card.
-var questionCard = document.getElementById("question-card");
-console.log(questionCard);
-/////////////////////////////////////////////////////////////////
-// ........ Create a section for the question text header
-// ........ Create a section container to hold the answers
-// ........ Create a section container to report the result of choice of answer.
-var questionHeader = questionCard.querySelector("#question-header");
-console.log(questionHeader);
-/////////////////////////////////////////////////////////////////
-var questionAnswers = questionCard.querySelector("#question-answers");
-console.log(questionAnswers);
-/////////////////////////////////////////////////////////////////
-var questionFooter = questionCard.querySelector("#question-footer");
-console.log(questionFooter);
 
 
 
-/////////////////////////////////////////////////////////////////
-// Create a "Start Quiz!" button for inserting into the start screen
-var startQuizBtn = document.createElement("button");
-startQuizBtn.setAttribute("id", "start-quiz-btn");
-startQuizBtn.textContent = "Start Quiz!";
-console.log(startQuizBtn);
-
-
-/////////////////////////////////////////////////////////////////
-// Create an Ordered List to be updated for each question's answers
-// list should have no more than 4 possible answers.  3 + 1 correct solution. (unless new question types are introduced.)
-var possibleAnswersOL = document.createElement("ol");
-possibleAnswersOL.setAttribute("id", "possible-answers-ol");
-console.log(possibleAnswersOL);
 
 /////////////////////////////////////////////////////////////////
 // Create footer correct/incorrect with horizontal rule
@@ -195,13 +217,10 @@ footerSection.appendChild(document.createElement("hr"));
 var footerCorrect = document.createElement("blockquote");
 footerCorrect.setAttribute("id", "footer-correct");
 footerCorrect.textContent = "Right!"
-console.log(footerCorrect);
 /////////////////////////////////////////////////////////////////
 var footerInCorrect = document.createElement("blockquote");
 footerInCorrect.setAttribute("id", "footer-incorrect");
 footerInCorrect.textContent = "Wrong!!";
-console.log(footerInCorrect);
-console.log(footerSection);
 
 
 /////////////////////////////////////////////////////////////////
@@ -228,7 +247,6 @@ scoreEntrySubmit.setAttribute("id","score-entry-submit");
 scoreEntrySubmit.setAttribute("type", "submit");
 scoreEntrySubmit.setAttribute("value", "Submit");
 scoreEntryForm.appendChild(scoreEntrySubmit);
-console.log(scoreEntryForm);
 
 
 /////////////////////////////////////////////////////////////////
@@ -249,7 +267,6 @@ var clearHighscoresBtn = document.createElement("button");
 clearHighscoresBtn.setAttribute("id", "clear-highscores-btn");
 clearHighscoresBtn.textContent = "Clear Highscores";
 highscoresSection.appendChild(clearHighscoresBtn);
-console.log(highscoresSection);
 
 
 
@@ -264,3 +281,10 @@ console.log(highscoresSection);
 /////////////////////////////////////////////////////////////////
 /// Events //////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
+
+var QuestionCard = new BindCard("question-card", "#question-header", "#question-answers","#question-footer");
+Greeting = new GreetingMessage(QuestionCard);
+console.log(Greeting);
+// Greeting.render();
+Quiz = new CodeQuiz(QuestionCard, questionsJsonStr);
+console.log(Quiz.currentQuestionHeader());
