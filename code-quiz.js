@@ -54,6 +54,24 @@ possibleAnswersOL.setAttribute("id", "possible-answers-ol");
 console.log(possibleAnswersOL);
 
 /////////////////////////////////////////////////////////////////
+// Create footer correct/incorrect with horizontal rule
+var footerSection = document.createElement("section");
+footerSection.setAttribute("id", "footer-section");
+/////////////////////////////////////////////////////////////////
+footerSection.appendChild(document.createElement("hr"));
+/////////////////////////////////////////////////////////////////
+footerCorrect = document.createElement("blockquote");
+footerCorrect.textContent = "Right!"
+console.log(footerCorrect);
+/////////////////////////////////////////////////////////////////
+footerInCorrect = document.createElement("blockquote");
+footerInCorrect.textContent = "Wrong!!";
+console.log(footerInCorrect);
+console.log(footerSection);
+
+
+
+/////////////////////////////////////////////////////////////////
 /// JS Variables ////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
