@@ -102,11 +102,12 @@ var questionsJsonStr =
 // ........ Create a section for the question text header
 // ........ Create a section container to hold the answers
 // ........ Create a section container to report the result of choice of answer.
-function BindCard(parentContainer, headingId, mainId, footerId) {
-    this.parent = document.getElementById(parentContainer);
-    this.heading = this.parent.querySelector(headingId);
-    this.main = this.parent.querySelector(mainId);
-    this.footer = this.parent.querySelector(footerId);
+function BindCard(Ids) {
+    this.parent = document.getElementById(Ids.parentContainer);
+    this.heading = this.parent.querySelector(Ids.headingId);
+    this.section = this.parent.querySelector(Ids.sectionId);
+    this.footer = this.parent.querySelector(Ids.footerId);
+    this.bindElement = function (dstElement, value) { this[dstElement].appendChild(value); }
 };
 
 
@@ -122,13 +123,13 @@ function GreetingMessage (Card) {
         headingNode.textContent = this.headingText;
         return headingNode;
      }
-     this.bindHeading = function () { Card.heading.appendChild(this.heading()); }
+     this.bindHeading = function () {Card.bindElement("heading", this.heading());}
      this.description = function () {
          var descriptionNode = document.createElement("p")
          descriptionNode.textContent = this.descriptionText;
          return descriptionNode;
      }
-     this.bindDescription = function () { Card.main.appendChild(this.description()) }
+     this.bindDescription = function () {Card.bindElement("section", this.description());}
     /////////////////////////////////////////////////////////////////
     // Create a "Start Quiz!" button for inserting into the start screen
     //var startQuizBtn = document.createElement("button");
@@ -137,7 +138,7 @@ function GreetingMessage (Card) {
         startQuizBtnNode.setAttribute("id", "start-quiz-btn");
         startQuizBtnNode.textContent = "Start Quiz!";
         return startQuizBtnNode;};
-    this.bindStartQuizBtn = function () { Card.main.appendChild(this.startQuizBtn()) }
+    this.bindStartQuizBtn = function () {Card.bindElement("section", this.startQuizBtn());}
 
     this.render = function () {
         Greeting.bindHeading();
@@ -152,8 +153,33 @@ function CodeQuiz (Card, JSONstr) {
     // Convert Questions JSON (str) into an javascript object
     this.questionsObj = JSON.parse(JSONstr);
     // Build the header for the current question
-    this.currentQuestionHeader = function () {
-        console.log(this.questionsObj.questions[this.currentQuestion]);
+    this.currentQuestionHeader = function () { 
+        var headingNode = document.createElement("h1");
+        headingNode.textContent = this.questionsObj["questions"][this.currentQuestion]["question"].questionText;
+        return headingNode;
+    }
+    this.bindHeading = function () {Card.bindElement("heading", this.currentQuestionHeader());}
+    this.correctAnswerLI = null;
+    this.incorrectAnswerLIs = null;
+    this.possibleAnswers = function () {
+        var incorrectAnswerLIs = [];
+        (this.questionsObj["questions"][this.currentQuestion]["question"]["answers"]).forEach(function (element, i) {
+            var AnswerLI = document.createElement("li");
+            AnswerLI.setAttribute("data-item", i);
+            if(element.hasOwnProperty("solution") && element["solution"] === true){
+                AnswerLI.textContent = element["answerText"];
+                AnswerLI.setAttribute("data-correct","true");
+                this.correctAnswerLI = AnswerLI;
+                
+                console.log(this.correctAnswerLI);
+            } else {
+                AnswerLI.setAttribute("data-correct", "false");
+                AnswerLI.textContent = element["answerText"];
+                incorrectAnswerLIs.push(AnswerLI);
+            }
+        });
+        this.incorrectAnswerLIs = incorrectAnswerLIs;
+        console.log(this.incorrectAnswerLIs);
     }
     /////////////////////////////////////////////////////////////////
     // Create an Ordered List to be updated for each question's answers
@@ -163,6 +189,10 @@ function CodeQuiz (Card, JSONstr) {
         possibleAnswersOLNode.setAttribute("id", "possible-answers-ol");
         return possibleAnswersOLNode;
     };
+    this.render = function () {
+        this.bindHeading();
+        this.possibleAnswers();
+    }
 };
 
 
@@ -282,9 +312,18 @@ highscoresSection.appendChild(clearHighscoresBtn);
 /// Events //////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
-var QuestionCard = new BindCard("question-card", "#question-header", "#question-answers","#question-footer");
+var CardIds = {
+  parentContainer: "question-card", //getbyID
+  headingId: "#question-header", //QuerySelector
+  section: "#question-answers", //QuerySelector
+  footerId: "#question-footer" //QuerySelector
+};
+
+var QuestionCard = new BindCard(CardIds);
 Greeting = new GreetingMessage(QuestionCard);
 console.log(Greeting);
-// Greeting.render();
+//Greeting.render();
 Quiz = new CodeQuiz(QuestionCard, questionsJsonStr);
-console.log(Quiz.currentQuestionHeader());
+console.log(Quiz);
+Quiz.render();
+
