@@ -1,5 +1,8 @@
+"use strict";
 // TODO: use DocumentFragment to construct HTML elements prior to appending the to the doc
 // https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment
+
+// TODO: Refactor h1 creation
 
 
 /////////////////////////////////////////////////////////////////
@@ -101,13 +104,19 @@ var questionsJsonStr =
 // ........ Create a section for the question text header
 // ........ Create a section container to hold the answers
 // ........ Create a section container to report the result of choice of answer.
-function BindCard(Ids) {
+var CardIds = {
+  parentContainer: "question-card", //getbyID
+  headingId: "#question-header", //QuerySelector
+  sectionId: "#question-section", //QuerySelector
+  footerId: "#question-footer" //QuerySelector
+};
+
+function AppendCard(Ids) {
     this.parent = document.getElementById(Ids.parentContainer);
     this.heading = this.parent.querySelector(Ids.headingId);
     this.section = this.parent.querySelector(Ids.sectionId);
-    this.section = this.parent.querySelector(Ids.footerId);
     this.footer = this.parent.querySelector(Ids.footerId);
-    this.bindElement = function (dstElement, value) { this[dstElement].appendChild(value); }
+    this.appendElement = function (dstElement, value) { this[dstElement].appendChild(value); }
 };
 
 
@@ -123,13 +132,13 @@ function GreetingMessage (Card) {
         headingNode.textContent = this.headingText;
         return headingNode;
      }
-     this.bindHeading = function () {Card.bindElement("heading", this.heading());}
+     this.appendHeading = function () {Card.appendElement("heading", this.heading());}
      this.description = function () {
          var descriptionNode = document.createElement("p")
          descriptionNode.textContent = this.descriptionText;
          return descriptionNode;
      }
-     this.bindDescription = function () {Card.bindElement("section", this.description());}
+     this.appendDescription = function () {Card.appendElement("section", this.description());}
     /////////////////////////////////////////////////////////////////
     // Create a "Start Quiz!" button for inserting into the start screen
     //var startQuizBtn = document.createElement("button");
@@ -138,12 +147,12 @@ function GreetingMessage (Card) {
         startQuizBtnNode.setAttribute("id", "start-quiz-btn");
         startQuizBtnNode.textContent = "Start Quiz!";
         return startQuizBtnNode;};
-    this.bindStartQuizBtn = function () {Card.bindElement("section", this.startQuizBtn());}
+    this.bindStartQuizBtn = function () {Card.appendElement("section", this.startQuizBtn());}
 
     this.render = function () {
-        Greeting.bindHeading();
-        Greeting.bindDescription();
-        Greeting.bindStartQuizBtn();
+        Greeting.appendHeading();
+        Greeting.appendDescription();
+        Greeting.appendStartQuizBtn();
     }
 };
 
@@ -158,7 +167,7 @@ function CodeQuiz (Card, JSONstr) {
         headingNode.textContent = this.questionsObj["questions"][this.currentQuestion]["question"].questionText;
         return headingNode;
     }
-    this.bindHeading = function () {Card.bindElement("heading", this.currentQuestionHeader());}
+    this.appendHeading = function () {Card.appendElement("heading", this.currentQuestionHeader());}
     this.shuffle = function (array) {
         var counter = array.length;
         
@@ -214,34 +223,65 @@ function CodeQuiz (Card, JSONstr) {
 
         return possibleAnswersOLNode;
     };
-    this.bindPossibleAnswersFragment = function () {
-        Card.bindElement("section", this.possibleAnswersFragment());
+    this.appendPossibleAnswersFragment = function () {
+        Card.appendElement("section", this.possibleAnswersFragment());
     }
+    this.footerSection = function () {
+        /////////////////////////////////////////////////////////////////
+        // Create footer correct/incorrect with horizontal rule
+        var footerSection = document.createElement("section");
+        footerSection.setAttribute("id", "footer-section");
+        footerSection.appendChild(document.createElement("hr"));
+
+        return footerSection;
+    };
+    this.footerCorrect = function () {
+        var footerCorrect = this.footerSection();
+        var correct = document.createElement("blockquote");
+        correct.setAttribute("id", "footer-correct");
+        correct.textContent = "Right!";
+
+        footerCorrect.appendChild(correct);
+
+        return footerCorrect;
+    };
+    this.appendFooterCorrect = function () {Card.appendElement("footer", this.footerCorrect());}
+    this.footerInCorrect = function () {
+        var footerInCorrect = this.footerSection();
+        var incorrect = document.createElement("blockquote");
+        incorrect.setAttribute("id", "footer-incorrect");
+        incorrect.textContent = "Wrong!!";
+
+        footerInCorrect.appendChild(incorrect);
+
+        return footerInCorrect;
+    };
+    this.appendFooterInCorrect = function () {Card.appendElement("footer", this.footerInCorrect());}
     this.render = function () {
-        this.bindHeading();
-        this.bindPossibleAnswersFragment();
+        this.appendHeading();
+        this.appendPossibleAnswersFragment();
+        this.appendFooterCorrect();
+        this.appendFooterInCorrect();
     }
 };
 
-/////////////////////////////////////////////////////////////////
-// Create footer correct/incorrect with horizontal rule
-var footerSection = document.createElement("section");
-footerSection.setAttribute("id", "footer-section");
-footerSection.appendChild(document.createElement("hr"));
-/////////////////////////////////////////////////////////////////
-var footerCorrect = document.createElement("blockquote");
-footerCorrect.setAttribute("id", "footer-correct");
-footerCorrect.textContent = "Right!"
-/////////////////////////////////////////////////////////////////
-var footerInCorrect = document.createElement("blockquote");
-footerInCorrect.setAttribute("id", "footer-incorrect");
-footerInCorrect.textContent = "Wrong!!";
+
 /////////////////////////////////////////////////////////////////
 // TODO: Create a JavaScript Object to report their final score to the user and enter and submit their initials
 //          (object should conform to existing card containers (3x: textHeader, (answer/finalscore & enter initials), leave the last container empty.))
-function QuizReport () {
+function QuizReport (Card) {
     this.headingText = "All Done!";
+    this.heading = function () { 
+        var headingNode = document.createElement("h1");
+        headingNode.textContent = this.headingText;
+        return headingNode;
+    };
+    this.appendHeading = function () {Card.appendElement("heading", this.heading());}
     this.scoreMessage = "Your Final Score is: ";
+    this.render = function () {
+        console.log(this.heading());
+        this.appendHeading();
+    }
 };
 
 
@@ -314,19 +354,18 @@ highscoresSection.appendChild(clearHighscoresBtn);
 /// Events //////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
-var CardIds = {
-  parentContainer: "question-card", //getbyID
-  headingId: "#question-header", //QuerySelector
-  sectionId: "#question-section", //QuerySelector
-  footerId: "#question-footer" //QuerySelector
-};
-
-var QuestionCard = new BindCard(CardIds);
+/////////////////////////////////////////////////////////////////
+var QuestionCard = new AppendCard(CardIds);
 console.log(QuestionCard)
-Greeting = new GreetingMessage(QuestionCard);
+
+var Greeting = new GreetingMessage(QuestionCard);
 console.log(Greeting);
 //Greeting.render();
-Quiz = new CodeQuiz(QuestionCard, questionsJsonStr);
-console.log(Quiz);
-Quiz.render();
 
+var Quiz = new CodeQuiz(QuestionCard, questionsJsonStr);
+console.log(Quiz);
+//Quiz.render();
+
+var Report = new QuizReport(QuestionCard);
+console.log(Report);
+Report.render();
