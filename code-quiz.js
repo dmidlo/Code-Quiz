@@ -4,10 +4,22 @@
 
 // TODO: Refactor h1 creation
 
+// TODO: refactor for prototypal inheritance. Good opportunity here for this
+// https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Inheritance
+// https://codeburst.io/various-ways-to-create-javascript-object-9563c6887a47
+
+// TODO: Create click event listener on id="question-section"
+//
+// https://www.kirupa.com/html5/handling_events_for_many_elements.htm
+// https://stackoverflow.com/questions/8321874/how-to-get-all-childnodes-in-js-including-all-the-grandchildren
+// https://zellwk.com/blog/dom-traversals/ <----- Use this
+// another spurious example of an effective use of bubbling
+// https://www.permadi.com/tutorial/cssHighlightTableRow/index2.html
+
 
 /////////////////////////////////////////////////////////////////
 // create a header to hold the following:
-// ........reate a link to show the user the high scores.
+// ........create a link to show the user the high scores.
 // ................. TODO: User should not be able to see high scores while in game.
 // this is defined in the HTML as it is persistent on the page.
 var highscoresAnchor = document.getElementById("view-highscores-anchor");
@@ -16,6 +28,10 @@ var highscoresAnchor = document.getElementById("view-highscores-anchor");
 // ........ Create a indicator to show time elapsed while in game.
 // TODO: create 75 second timer that begins when quiz start button is clicked
 // this is defined in the HTML as it is persistent on the page.
+//
+// https://www.w3schools.com/js/js_timing.asp
+// https://www.w3schools.com/jsref/met_win_setinterval.asp
+// https://www.w3schools.com/jsref/met_win_settimeout.asp
 var timerSpan = document.getElementById("timer-span");
 
 /////////////////////////////////////////////////////////////////
@@ -24,6 +40,8 @@ var timerSpan = document.getElementById("timer-span");
 //  FUTURE WORK: allow user to import a properly formatted JSON string for custom questions
 //  FUTURE WORK: add questionType (true-false, multiple-choice, all of the above, click #x that apply, etc...)
 //  FUTURE WORK: add explainationText to answer objects
+//
+// https://www.w3schools.com/js/js_json.asp
 var questionsJsonStr =
     '{ "questions": [' +
         '{"question":' +
@@ -124,6 +142,10 @@ function AppendCard(Ids) {
 // Create a greeting message JavaScript Object that confroms to the three row layout.
 // "Coding Quiz Challenge"
 // "To answer the following code-related questions within the time. Keep in mind, incorrect answers will penalize your score/time by 10 seconds."
+//
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Method_definitions
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this
 function GreetingMessage (Card) {
     this.headingText = "Coding Quiz Challenge",
     this.descriptionText = "To answer the following code-related questions within the time. Keep in mind, incorrect answers will penalize your score/time by 10 seconds.",
@@ -192,6 +214,7 @@ function CodeQuiz (Card, JSONstr) {
         (this.questionsObj["questions"][this.currentQuestion]["question"]["answers"]).forEach(function (element, i) {
             var AnswerLI = document.createElement("li");
             AnswerLI.setAttribute("data-index", i);
+            AnswerLI.classList.add("answer-li");
             if(element.hasOwnProperty("solution") && element["solution"] === true){
                 AnswerLI.textContent = element["answerText"];
                 AnswerLI.setAttribute("data-correct","true");
@@ -277,13 +300,57 @@ function QuizReport (Card) {
         return headingNode;
     };
     this.appendHeading = function () {Card.appendElement("heading", this.heading());}
-    this.scoreMessage = "Your Final Score is: ";
+    this.scoreText = "Your Final Score is: ";
+    this.score = function () {
+        var parentSpan = document.createElement("span");
+        var scoreNode = document.createElement("p")
+        var scoreSpan = document.createElement("span");
+        scoreSpan.setAttribute("id","score-span")
+        scoreNode.textContent = this.scoreText;
+
+        parentSpan.appendChild(scoreNode);
+        parentSpan.appendChild(scoreSpan);
+        return parentSpan;
+     }
+    this.appendScore = function () {Card.appendElement("section", this.score());};
+    this.scoreEntryForm = function () {
+        /////////////////////////////////////////////////////////////////
+        // Create Score entry form
+        var fragment = new DocumentFragment();
+        var scoreEntryForm = document.createElement("form");
+        scoreEntryForm.setAttribute("id", "score-entry-form");
+        scoreEntryForm.setAttribute("action", "post");
+        fragment.appendChild(scoreEntryForm);
+        /////////////////////////////////////////////////////////////////
+        var scoreEntryLabel = document.createElement("label");
+        scoreEntryLabel.setAttribute("id","score-entry-label");
+        scoreEntryLabel.setAttribute("for", "score-entry-input");
+        scoreEntryLabel.textContent = "Enter Intitials: "
+        scoreEntryForm.appendChild(scoreEntryLabel);
+        /////////////////////////////////////////////////////////////////
+        var scoreEntryInput = document.createElement("input");
+        scoreEntryInput.setAttribute("id", "score-entry-input");
+        scoreEntryInput.setAttribute("name", "score-entry-input");
+        scoreEntryInput.setAttribute("type", "text");
+        scoreEntryInput.required = true;
+        scoreEntryForm.appendChild(scoreEntryInput);
+        /////////////////////////////////////////////////////////////////
+        var scoreEntrySubmit = document.createElement("input");
+        scoreEntrySubmit.setAttribute("id","score-entry-submit");
+        scoreEntrySubmit.setAttribute("type", "submit");
+        scoreEntrySubmit.setAttribute("value", "Submit");
+        scoreEntryForm.appendChild(scoreEntrySubmit);
+
+        return fragment;
+    }
+    this.appendScoreEntryForm = function () {Card.appendElement("section", this.scoreEntryForm());};
     this.render = function () {
-        console.log(this.heading());
         this.appendHeading();
+        this.appendScore();
+        this.appendScoreEntryForm();
+        console.log(this.scoreEntryForm());
     }
 };
-
 
 /////////////////////////////////////////////////////////////////
 // TODO: Report to the user a desc sorted list of high scores
@@ -295,37 +362,6 @@ var TopScores = {
   headingText: "High Scores",
   scores: []
 };
-
-
-
-
-
-/////////////////////////////////////////////////////////////////
-// Create Score entry form
-var scoreEntryForm = document.createElement("form");
-scoreEntryForm.setAttribute("id", "score-entry-form");
-scoreEntryForm.setAttribute("action", "post");
-/////////////////////////////////////////////////////////////////
-var scoreEntryLabel = document.createElement("label");
-scoreEntryLabel.setAttribute("id","score-entry-label");
-scoreEntryLabel.setAttribute("for", "score-entry-input");
-scoreEntryLabel.textContent = "Enter Intitials: "
-scoreEntryForm.appendChild(scoreEntryLabel);
-/////////////////////////////////////////////////////////////////
-var scoreEntryInput = document.createElement("input");
-scoreEntryInput.setAttribute("id", "score-entry-input");
-scoreEntryInput.setAttribute("name", "score-entry-input");
-scoreEntryInput.setAttribute("type", "text");
-scoreEntryInput.required = true;
-scoreEntryForm.appendChild(scoreEntryInput);
-/////////////////////////////////////////////////////////////////
-var scoreEntrySubmit = document.createElement("input");
-scoreEntrySubmit.setAttribute("id","score-entry-submit");
-scoreEntrySubmit.setAttribute("type", "submit");
-scoreEntrySubmit.setAttribute("value", "Submit");
-scoreEntryForm.appendChild(scoreEntrySubmit);
-
-
 /////////////////////////////////////////////////////////////////
 // Create a container to hold high scores and assoc actions (start again & clear highscores)
 var highscoresSection = document.createElement("section");
@@ -345,9 +381,6 @@ clearHighscoresBtn.setAttribute("id", "clear-highscores-btn");
 clearHighscoresBtn.textContent = "Clear Highscores";
 highscoresSection.appendChild(clearHighscoresBtn);
 
-/////////////////////////////////////////////////////////////////
-/// Functions ///////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////
