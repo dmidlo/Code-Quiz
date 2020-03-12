@@ -383,28 +383,48 @@ function QuizReport(Card) {
 // ......... Create a JavaScript Object to hold the final scores list and interactive elements.
 // ......... TODO: Allow User to start the quiz over again
 // ......... TODO: Allow User to reset High Scores
-var TopScores = function () {
+var TopScores = function(Card) {
   this.headingText = "High Scores";
-  this.scores =  [];
+  this.heading = function() {
+    var headingNode = document.createElement("h1");
+    headingNode.textContent = this.headingText;
+    return headingNode;
+  };
+  this.appendHeading = function() {
+    Card.appendElement("heading", this.heading());
+  };
+  this.scores = [];
+  this.highscoresSection = function() {
+    /////////////////////////////////////////////////////////////////
+    // Create a container to hold high scores and assoc actions (start again & clear highscores)
+    var fragment = new DocumentFragment();
+    var highscoresSection = document.createElement("section");
+    highscoresSection.setAttribute("id", "highscores-section");
+    // Create child container to hold desc sorted high scores (ordered list)
+    var highscoresOL = document.createElement("ol");
+    highscoresOL.setAttribute("id", "highscores-ol");
+    highscoresSection.appendChild(highscoresOL);
+    // Create Play Again Button /////////////////////////////////////
+    var playAgainBtn = document.createElement("button");
+    playAgainBtn.setAttribute("id", "start-quiz-btn");
+    playAgainBtn.textContent = "Play Again!";
+    highscoresSection.appendChild(playAgainBtn);
+    // Create Clear High Scores Button //////////////////////////////
+    var clearHighscoresBtn = document.createElement("button");
+    clearHighscoresBtn.setAttribute("id", "clear-highscores-btn");
+    clearHighscoresBtn.textContent = "Clear Highscores";
+    highscoresSection.appendChild(clearHighscoresBtn);
+
+    return fragment.appendChild(highscoresSection);
+  };
+  this.appendHighscoresSection = function() {
+    Card.appendElement("section", this.highscoresSection());
+  };
+  this.render = function() {
+    this.appendHeading();
+    this.appendHighscoresSection(); 
+  };
 };
-/////////////////////////////////////////////////////////////////
-// Create a container to hold high scores and assoc actions (start again & clear highscores)
-var highscoresSection = document.createElement("section");
-highscoresSection.setAttribute("id", "highscores-section");
-// Create child container to hold desc sorted high scores (ordered list)
-var highscoresOL = document.createElement("ol");
-highscoresOL.setAttribute("id", "highscores-ol");
-highscoresSection.appendChild(highscoresOL);
-// Create Play Again Button /////////////////////////////////////
-var playAgainBtn = document.createElement("button");
-playAgainBtn.setAttribute("id", "start-quiz-btn");
-playAgainBtn.textContent = "Play Again!";
-highscoresSection.appendChild(playAgainBtn);
-// Create Clear High Scores Button //////////////////////////////
-var clearHighscoresBtn = document.createElement("button");
-clearHighscoresBtn.setAttribute("id", "clear-highscores-btn");
-clearHighscoresBtn.textContent = "Clear Highscores";
-highscoresSection.appendChild(clearHighscoresBtn);
 
 /////////////////////////////////////////////////////////////////
 /// Events //////////////////////////////////////////////////////
@@ -425,4 +445,8 @@ console.log(Quiz);
 
 var Report = new QuizReport(QuestionCard);
 console.log(Report);
-Report.render();
+//Report.render();
+
+var Scores = new TopScores(QuestionCard);
+console.log(Scores);
+Scores.render();
