@@ -1,12 +1,16 @@
 "use strict";
+// this architecture is a psuedo MVC app whereby the model is mocked out
+// using a json string.  The view and controller however are contained in the 
+// same objects as this is not actually a full stack app but simply a script 
+// running in the browser.
+
+
+
+
 // TODO: use DocumentFragment to construct HTML elements prior to appending the to the doc
 // https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment
 
 // TODO: Refactor h1 creation
-
-// TODO: refactor for prototypal inheritance. Good opportunity here for this
-// https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Inheritance
-// https://codeburst.io/various-ways-to-create-javascript-object-9563c6887a47
 
 // TODO: Create click event listener on id="question-section"
 //
@@ -41,6 +45,10 @@ var timerSpan = document.getElementById("timer-span");
 //  FUTURE WORK: add explainationText to answer objects
 //
 // https://www.w3schools.com/js/js_json.asp
+//
+// the first object/question in this mock has more than four available 
+// answers, this is to intentionally introduce a problem I would expect
+// when allowing user import of questions.
 var questionsJsonStr =
   '{ "questions": [' +
   '{"question":' +
@@ -137,6 +145,54 @@ function AppendCard(Ids) {
     this[dstElement].appendChild(value);
   };
 }
+
+/////////////////////////////////////////////////////////////////
+/////// Controller Singlton Factory(?) //////////////////////////
+/////////////////////////////////////////////////////////////////
+// TODO: refactor for prototypal inheritance. Good opportunity here for this
+// https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Inheritance
+// https://codeburst.io/various-ways-to-create-javascript-object-9563c6887a47
+// https://stackoverflow.com/questions/4166616/understanding-the-difference-between-object-create-and-new-somefunction
+// http://theoryapp.com/javascript-inheritance-pseudoclassical-vs-prototypal/
+// 
+// Somthing that starts with defining the methods and props on the object's prototype
+//
+// function ViewController(Card) {
+//    this.headingText = "";  
+// };
+// Controller.prototype.render = function(){...};
+//
+// ... and then follows up with invoking the prototype's constructor on a new object using .call()
+//     NOTE: rather than inheritance, this is simply defining a new constructor that has the same 
+//           prop/method names as ViewController. It's a bit of a "classy" copy/paste.  But changes
+//           on the parent object will not be reflected in the child without specifying inheritance. 
+//           
+// function CodeQuiz(Card) {
+//     //    
+//     ViewController.call(this, Card);
+//
+//     // extend the ViewController object with a new prop
+//     this.possibleAnswers = []
+// }
+//
+// to specify prototypal inheritance then, CodeQuiz's prototype need's to reference ViewController's prototype 
+//  NOTE: when choosing between "new" and "Object.create(foo.prototype)" for object instatiation, only use
+//       "new" to create the usable objects as "new" will actually invoke the constructor, whereas Object.create()
+//        does not invoke the constructor.
+// CodeQuiz.prototype = Object.create(ViewController.prototype);
+//
+// Finally though I don't have time to look further; my hunch we have to make the inheritance fully independent by 
+// disallowing iterator functions' ability to enumerate up to the parent constructor
+// Object.defineProperty(ViewController.prototype, "constructor", {
+//   value: ViewController,
+//   enumerable: false, // so that it does not appear in 'for in' loop
+//   writable: true
+// });
+//
+// If the new object will also be used as a parent, remember to define new methods on the prototype.
+// ViewController.prototype.greeting = function() {...}
+
+
 
 /////////////////////////////////////////////////////////////////
 // Create a greeting message JavaScript Object that confroms to the three row layout.
@@ -422,7 +478,7 @@ var TopScores = function(Card) {
   };
   this.render = function() {
     this.appendHeading();
-    this.appendHighscoresSection(); 
+    this.appendHighscoresSection();
   };
 };
 
@@ -449,4 +505,4 @@ console.log(Report);
 
 var Scores = new TopScores(QuestionCard);
 console.log(Scores);
-Scores.render();
+//Scores.render();
